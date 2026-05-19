@@ -43,3 +43,45 @@ Method Endpoint Access Description
 POST/api/requests/createHospital/UserInitiates a new emergency request for a specific blood type.
 GET/api/requests/activePublicReturns all unfulfilled, high-priority blood shortages.
 GET/api/match/donors/:blood_typeStaff/AdminQueries the database for eligible matching donors nearby
+
+Local Installation & Setup
+
+Follow these steps to spin up the development server locally:
+1. Clone the Repository
+Bash
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+cd YOUR_REPO_NAME
+
+2. Configure Environment Variables
+Create a .env file in the root directory and populate it with your specific database credentials:
+
+Code snippet
+
+PORT=5000
+DB_HOST=localhost
+DB_USER=your_mysql_username
+DB_PASS=your_mysql_password
+DB_NAME=eblood_db
+JWT_SECRET=your_super_secret_jwt_key
+
+3. Initialize the Database
+
+Import your initial database schema into your local MySQL instance:
+
+Bash
+mysql -u your_mysql_username -p eblood_db < database_schema.sql
+
+4. Install Dependencies & Launch
+Bash
+
+# For Node.js setups:
+npm install
+npm run dev
+
+# For Python/Flask setups:
+pip install -r requirements.txt
+python app.py
+
+The server will initialize and begin listening for incoming requests on http://localhost:5000.
+
+Developer Note: Remember to replace the placeholder file names (like database_schema.sql) and terminal setup scripts with the exact commands matching the framework you built this with before committing to GitHub!

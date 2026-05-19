@@ -1,0 +1,349 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+:root {
+    --bg-obsidian: #050505;        /* Deep Obsidian Void */
+    --surface-glass: rgba(13, 13, 13, 0.75); /* Frozen Glass */
+    
+    /* High-Contrast Mission Critical Color System */
+    --neon-blood: #FF0000;         /* Pure Blood Red */
+    --cyber-cyan: #00F0FF;         /* Cyber Cyan Safety */
+    --neon-glow: rgba(255, 0, 0, 0.25);
+    
+    --border-frozen: rgba(255, 0, 0, 0.15);
+    --border-active: rgba(255, 0, 0, 0.6);
+    
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-obsidian);
+    color: #F8FAFC;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Background Canvas Layer */
+#pulse-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: auto;
+}
+
+.interface-layer {
+    position: relative;
+    z-index: 10;
+    pointer-events: none; /* Allows mouse interactions to pass through to canvas fluid particles */
+}
+
+.interactive-element {
+    pointer-events: auto; /* Restores mouse capture for inputs and buttons */
+}
+
+/* Frozen Glass UI Element Card Maps */
+.frozen-card {
+    background: var(--surface-glass);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid var(--border-frozen);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.03);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.frozen-card:hover {
+    border-color: var(--border-active);
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.15), 0 16px 40px rgba(0, 0, 0, 0.8);
+    transform: translateY(-2px);
+}
+
+/* Tactical Data Typography Configuration */
+.data-mono {
+    font-family: var(--font-mono);
+    letter-spacing: -0.02em;
+}
+
+/* Precision Tactical Form Inputs */
+.console-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #FFFFFF;
+    padding: 0.875rem 1rem;
+    border-radius: 4px;
+    outline: none;
+    font-family: var(--font-mono);
+    font-size: 0.825rem;
+    transition: all 0.2s ease;
+}
+
+.console-input:focus {
+    border-color: var(--cyber-cyan);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+}
+
+/* Heartbeat Breathing Keyframe Animations */
+.btn-heartbeat-register {
+    background: transparent;
+    border: 1px solid var(--cyber-cyan);
+    color: var(--cyber-cyan);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    border-radius: 2px;
+    animation: cyanBreathing 3s infinite ease-in-out;
+}
+
+.btn-heartbeat-broadcast {
+    background: var(--neon-blood);
+    color: #000000;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    border-radius: 2px;
+    animation: bloodBreathing 2.5s infinite ease-in-out;
+}
+
+@keyframes cyanBreathing {
+    0%, 100% { box-shadow: 0 0 8px rgba(0, 240, 255, 0.2); border-color: rgba(0, 240, 255, 0.4); }
+    50% { box-shadow: 0 0 22px rgba(0, 240, 255, 0.6); border-color: var(--cyber-cyan); }
+}
+
+@keyframes bloodBreathing {
+    0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); background-color: #E60000; }
+    50% { box-shadow: 0 0 26px rgba(255, 0, 0, 0.75); background-color: var(--neon-blood); }
+}
+
+/* Holographic Expansion Panel Variables */
+.holo-badge {
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.donor-node:hover .holo-badge {
+    transform: scale(1.15);
+    color: var(--neon-blood);
+    text-shadow: 0 0 12px var(--neon-blood);
+}
+
+/* SVG Lineage Vein Connector Layout */
+#vein-svg-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+}
+
+.vein-path {
+    stroke: var(--neon-blood);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    fill: none;
+    opacity: 0.4;
+    stroke-dasharray: 8, 8;
+    animation: veinFlow 30s linear infinite;
+}
+
+@keyframes veinFlow {
+    to { stroke-dashoffset: -500; }
+}
+
+/* Cyber Safety Badge Elements */
+.safety-indicator {
+    color: var(--cyber-cyan);
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+}
+
+.fade-in-node {
+    animation: nodeSpawn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes nodeSpawn {
+    from { opacity: 0; transform: scale(0.96) translateY(5px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.btn-tactical-link {
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.02);
+    color: white;
+    transition: 0.25s ease;
+    border-radius: 4px;
+}
+
+.btn-tactical-link:hover {
+    border-color: var(--cyber-cyan);
+    color: var(--cyber-cyan);
+    box-shadow: 0 0 20px rgba(0,240,255,0.2);
+}
+
+.metric-tile {
+    transition: 0.3s ease;
+}
+
+.metric-tile:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,0,0,0.2);
+    box-shadow: 0 0 20px rgba(255,0,0,0.08);
+}
+
+.live-status-pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #00ff88;
+    display: inline-block;
+    animation: livePulse 1.5s infinite;
+}
+
+@keyframes livePulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.6);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.pulse-active {
+    animation: emergencyBlink 0.5s infinite;
+}
+
+@keyframes emergencyBlink {
+    0%,100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.2;
+    }
+}
+
+.glass-panel {
+    background: rgba(255,255,255,0.02);
+    backdrop-filter: blur(10px);
+}
+
+.skeleton-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.06),
+        transparent
+    );
+
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.badge-verified {
+    background: rgba(0,240,255,0.1);
+    color: var(--cyber-cyan);
+    border: 1px solid rgba(0,240,255,0.3);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+}
+
+.critical-badge {
+    background: rgba(255,0,0,0.12);
+    color: #ff4d4d;
+    border: 1px solid rgba(255,0,0,0.4);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.stable-badge {
+    background: rgba(255,255,255,0.05);
+    color: #94a3b8;
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.emergency-card {
+    transition: all 0.3s ease;
+}
+
+.emergency-card:hover {
+    transform: translateY(-2px);
+}
+
+.emergency-card.critical {
+    border-color: rgba(255,0,0,0.35);
+    box-shadow:
+        0 0 25px rgba(255,0,0,0.08),
+        inset 0 0 20px rgba(255,0,0,0.02);
+}
+
+.score-ring-tactical {
+    min-width: 50px;
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,0,0,0.3);
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255,0,0,0.3);
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,0,0,0.5);
+}
+

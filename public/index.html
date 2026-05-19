@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Blood Operations Gateway</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/public/css/theme.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/public/js/app.js"></script>
+</head>
+<body>
+    <canvas id="pulse-canvas"></canvas>
+    <div class="interface-layer min-h-screen flex flex-col justify-between">
+        <header class="border-b border-white/5 bg-[#050505]/60 backdrop-blur-md sticky top-0 z-50">
+            <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <div class="w-8 h-8 rounded border border-[#FF0000] flex items-center justify-center font-bold text-[#FF0000] text-sm tracking-tighter shadow-[0_0_10px_rgba(255,0,0,0.3)]">E-B</div>
+                    <div>
+                        <span class="font-bold text-xs font-mono tracking-widest text-white block uppercase">E-BLOOD OPERATIONS PLATFORM</span>
+                        <span class="text-[9px] text-slate-500 font-mono tracking-tight block mt-0.5">High-Stakes Resource Routing Infrastructure</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2 border border-white/5 bg-black px-3 py-1.5 rounded text-[10px] font-mono tracking-wider text-slate-400 uppercase">
+                        <span class="live-status-pulse"></span> SYSTEM_ONLINE
+                    </div>
+                    <a href="/portal" class="interactive-element btn-tactical-link px-4 py-2 font-bold tracking-wider uppercase text-[10px]">Access Real-Time Command Center →</a>
+                </div>
+            </nav>
+        </header>
+
+        <main class="max-w-6xl mx-auto px-6 py-16 w-full grid md:grid-cols-12 gap-10 items-start">
+            
+            <div class="md:col-span-4 space-y-6">
+                <div class="inline-block text-[10px] font-bold font-mono text-[#00F0FF] uppercase tracking-widest border border-[#00F0FF]/20 bg-[#00F0FF]/5 px-2.5 py-1 rounded">TACTICAL GATEWAY</div>
+                <h1 class="text-3xl font-extrabold tracking-tight text-white leading-tight uppercase">Emergency Transit Interface</h1>
+                <p class="text-slate-400 text-xs leading-relaxed font-medium">
+                    A low-cognitive-load coordination environment built to minimize dispatch delays under acute high-stress conditions. Links hospital arrays with available donors utilizing geometric proximity filtering.
+                </p>
+                <div class="border-t border-white/5 pt-4 space-y-3 font-mono text-[11px] text-slate-500">
+                    <div class="flex items-center gap-3"><span class="text-[#00F0FF]">✔</span> Fluid Shockwave Triggering</div>
+                    <div class="flex items-center gap-3"><span class="text-[#00F0FF]">✔</span> GeoJSON Radius Compliance</div>
+                </div>
+            </div>
+
+            <div class="md:col-span-8 grid sm:grid-cols-2 gap-6 w-full">
+                <section class="frozen-card rounded p-6 space-y-4 flex flex-col justify-between h-full">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-white/5 pb-3">
+                            <h2 class="text-xs font-bold font-mono text-white uppercase tracking-wider">Donor Registration Panel</h2>
+                            <span class="text-[9px] font-mono text-slate-600">SYS_REG_01</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-[9px] font-mono font-bold text-slate-400 block mb-1 uppercase">Full Identification Name</label>
+                                <input id="d-name" class="interactive-element console-input" value="Abhinav Singh">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="text-[9px] font-mono font-bold text-slate-400 block mb-1 uppercase">Antigen Group</label>
+                                    <select id="d-group" class="interactive-element console-input"><option>O-</option><option>O+</option><option>A+</option><option>B+</option></select>
+                                </div>
+                                <div>
+                                    <label class="text-[9px] font-mono font-bold text-slate-400 block mb-1 uppercase">City Core</label>
+                                    <input id="d-city" class="interactive-element console-input" value="Amritsar">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-mono font-bold text-slate-400 block mb-1 uppercase">Communications Route Line</label>
+                                <input id="d-phone" class="interactive-element console-input" value="+91 94172 00000">
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="registerDonor()" class="interactive-element w-full btn-heartbeat-register py-3.5 mt-4 font-bold">Commit Donor Registry File</button>
+                </section>
+
+                <section class="frozen-card rounded p-6 space-y-4 flex flex-col justify-between h-full">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-white/5 pb-3">
+                            <h2 class="text-xs font-bold font-mono text-[#FF0000] uppercase tracking-wider">Emergency Incident Dispatch</h2>
+                            <span class="text-[9px] font-mono text-[#FF0000]">ALERT_NODE_02</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-[9px] font-mono font-bold text-slate-400 block mb-1 uppercase">Facility Deployment Identifier</label>
+                                <input id="e-hosp" class="interactive-element console-input" value="Amritsar Civil Hospital">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="text-[9px] font-mono font-bold text-slate-400 block mb-1 uppercase">Target Group</label>
+                                    <select id="e-group" class="interactive-element console-input"><option>O-</option><option>A+</option><option>B+</option></select>
+                                </div>
+                                <div>
+                                    <label class="text-[9px] font-mono font-bold text-slate-400 block mb-1 uppercase">Priority Weight</label>
+                                    <select id="e-urgency" class="interactive-element console-input"><option>Critical</option><option>Stable</option></select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-mono font-bold text-slate-400 block mb-1 uppercase">Internal Facility Sector</label>
+                                <input id="e-loc" class="interactive-element console-input" value="ICU Block B - Bed 4">
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="broadcastEmergency()" class="interactive-element w-full btn-heartbeat-broadcast py-3.5 mt-4">Execute Incident Transmission</button>
+                </section>
+            </div>
+        </main>
+
+        <footer class="max-w-7xl mx-auto px-6 py-6 text-center font-mono text-[9px] text-slate-600 w-full border-t border-white/5 tracking-wider">
+            SECURITY MATRIX PROTOCOLS ACTIVE // LIVE ROUTING CONSOLE PIPELINES
+        </footer>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('pulse-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [], shockwaves = [];
+        let mouse = { x: null, y: null };
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        resize();
+
+        class CellParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.radius = Math.random() * 6 + 4;
+                this.vx = (Math.random() - 0.5) * 0.4;
+                this.vy = (Math.random() - 0.5) * 0.4;
+                this.alpha = Math.random() * 0.3 + 0.1;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                if (mouse.x && mouse.y) {
+                    const dx = this.x - mouse.x, dy = this.y - mouse.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 120) {
+                        this.x += (dx / dist) * 2;
+                        this.y += (dy / dist) * 2;
+                    }
+                }
+                shockwaves.forEach(wave => {
+                    const dx = this.x - wave.x, dy = this.y - wave.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (Math.abs(dist - wave.currentRadius) < 15) {
+                        this.x += (dx / dist) * 4;
+                        this.y += (dy / dist) * 4;
+                    }
+                });
+            }
+            draw() {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255,0,0,${this.alpha})`;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#FF0000';
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class Shockwave {
+            constructor(x, y) {
+                this.x = x; this.y = y;
+                this.maxRadius = Math.max(canvas.width, canvas.height) * 1.2;
+                this.currentRadius = 0;
+                this.speed = 14;
+                this.opacity = 1;
+            }
+            update() {
+                this.currentRadius += this.speed;
+                this.opacity = 1 - (this.currentRadius / this.maxRadius);
+            }
+            draw() {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.currentRadius, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(255, 0, 0, ${this.opacity * 0.6})`;
+                ctx.lineWidth = 4;
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#FF0000';
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        for(let i=0; i<65; i++) particles.push(new CellParticle());
+
+        function triggerSystemPulse() {
+            shockwaves.push(new Shockwave(canvas.width / 2, canvas.height / 2));
+        }
+
+        function animate() {
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            shockwaves = shockwaves.filter(w => w.currentRadius < w.maxRadius);
+            shockwaves.forEach(w => { w.update(); w.draw(); });
+
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        async function registerDonor() {
+            try {
+                await api('/api/donors', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fullName: document.getElementById('d-name').value,
+                        bloodGroup: document.getElementById('d-group').value,
+                        phone: document.getElementById('d-phone').value,
+                        city: document.getElementById('d-city').value,
+                        email: 'donor_' + Date.now() + '@hospital-ops.in'
+                    })
+                });
+                triggerSystemPulse();
+                alert('Registry configuration logged successfully.');
+            } catch (err) { alert(err.message); }
+        }
+
+        async function broadcastEmergency() {
+            const email = prompt("Provide Clinical Administrator Authentication Domain Email:", "admin@apollohospitals.com");
+            if (!email) return;
+            try {
+                const loginRes = await api('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                await api('/api/emergencies', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${loginRes.token}` },
+                    body: JSON.stringify({
+                        hospitalName: document.getElementById('e-hosp').value,
+                        requiredGroup: document.getElementById('e-group').value,
+                        urgency: document.getElementById('e-urgency').value,
+                        location: document.getElementById('e-loc').value,
+                        city: 'Amritsar'
+                    })
+                });
+                triggerSystemPulse();
+                alert('Strategic broadcast transmission executed.');
+            } catch (err) { alert(err.message); }
+        }
+    </script>
+</body>
+</html>

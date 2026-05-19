@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operations Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/public/css/theme.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/public/js/app.js"></script>
+</head>
+<body>
+    <canvas id="pulse-canvas"></canvas>
+    
+    <svg id="vein-svg-layer"></svg>
+
+    <div class="interface-layer min-h-screen">
+        <header class="border-b border-white/5 bg-[#050505]/80 backdrop-blur-md sticky top-0 z-50">
+            <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <span class="text-base text-[#FF0000] drop-shadow-[0_0_8px_#FF0000]">🛰️</span>
+                    <div>
+                        <h1 class="font-bold text-xs text-white tracking-widest uppercase data-mono">REAL-TIME TACTICAL ORCHESTRATOR</h1>
+                        <p class="text-[9px] font-mono text-slate-500 uppercase mt-0.5">Automated Multi-Criteria Scoring & Lineage Array Grid</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="storage-badge" class="interactive-element text-[10px] font-mono border border-[#00F0FF]/30 bg-[#00F0FF]/5 px-3 py-1 rounded text-[#00F0FF] uppercase tracking-wider">—</span>
+                    <a href="/" class="interactive-element border border-white/10 hover:bg-white/5 text-slate-400 px-3 py-1.5 rounded font-bold tracking-wide uppercase text-[9px]">← Terminate Console Session</a>
+                </div>
+            </nav>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-6 py-8 space-y-6">
+            
+            <section class="frozen-card rounded p-4 flex flex-wrap gap-4 items-center justify-between">
+                <div id="hospital-anchor" class="flex flex-wrap gap-4 items-center">
+                    <div>
+                        <select id="radius-select" class="interactive-element console-input py-2 w-36 text-xs font-mono"><option value="5">RANGE: 5 KM</option><option value="10" selected>RANGE: 10 KM</option><option value="20">RANGE: 20 KM</option></select>
+                    </div>
+                    <div>
+                        <select id="blood-select" class="interactive-element console-input py-2 w-32 text-xs font-mono"><option>O-</option><option>A+</option><option>B+</option></select>
+                    </div>
+                    <button id="geo-btn" class="interactive-element btn-tactical-link px-4 py-2 text-xs font-bold tracking-wide uppercase">📍 Bind GPS Locators</button>
+                </div>
+                <div id="geo-status" class="text-[10px] font-mono text-slate-400 border border-white/5 px-3 py-2 bg-black/40 rounded tracking-tight">MONITOR DISPATCH FIXED COORDINATES: UNSYNCHRONIZED</div>
+            </section>
+
+            <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 data-mono text-xs">
+                <div class="metric-tile rounded bg-black/50 border border-white/5 p-4"><p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Global Handshakes</p><p id="stat-total" class="text-xl font-bold text-white mt-1">—</p></div>
+                <div class="metric-tile rounded bg-black/50 border border-white/5 p-4"><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-[#00F0FF]">Matrix Match Profiles</p><p id="stat-matched" class="text-xl font-bold text-[#00F0FF] mt-1">—</p></div>
+                <div class="metric-tile rounded bg-black/50 border border-white/5 p-4"><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-[#FF0000]">Active Transmissions</p><p id="stat-emergencies" class="text-xl font-bold text-[#FF0000] mt-1">—</p></div>
+                <div class="metric-tile rounded bg-black/50 border border-white/5 p-4"><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-amber-500">Outage Buffers</p><p id="stat-queue" class="text-xl font-bold text-amber-500 mt-1">0</p></div>
+            </section>
+
+            <div class="grid lg:grid-cols-3 gap-6 items-start">
+                <section class="lg:col-span-2 space-y-4">
+                    <h2 class="text-[10px] font-bold text-white uppercase tracking-wider flex items-center gap-2">🎯 Proximity Candidate Vector Arrays</h2>
+                    <div id="donor-grid" class="grid md:grid-cols-2 gap-4"></div>
+                </section>
+
+                <section class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <span id="feed-pulse" class="w-1.5 h-1.5 rounded-full bg-[#FF0000] shadow-[0_0_8px_#FF0000]"></span>
+                        <h2 class="text-[10px] font-bold text-white uppercase tracking-wider">Strategic Dispatch Transmission Logs</h2>
+                    </div>
+                    <div id="emergency-list" class="space-y-3"></div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let coords = null, socket, canvas, ctx, particles = [], shockwaves = [];
+        
+        // Canvas Backdrop Bootstrapper
+        canvas = document.getElementById('pulse-canvas');
+        ctx = canvas.getContext('2d');
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class BackgroundCell {
+            constructor() {
+                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                this.radius = Math.random() * 4 + 3; this.vx = (Math.random() - 0.5) * 0.3; this.vy = (Math.random() - 0.5) * 0.3;
+                this.alpha = Math.random() * 0.25 + 0.05;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1; if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                shockwaves.forEach(w => {
+                    const dx = this.x - w.x, dy = this.y - w.y; const d = Math.sqrt(dx*dx + dy*dy);
+                    if (Math.abs(d - w.radius) < 20) { this.x += (dx/d)*3; this.y += (dy/d)*3; }
+                });
+            }
+            draw() {
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+                ctx.fillStyle = `rgba(255,0,0,${this.alpha})`;
+            }
+        }
+        for(let i=0; i<50; i++) particles.push(new BackgroundCell());
+
+        function emitShockwave() {
+            shockwaves.push({ x: canvas.width/2, y: canvas.height/2, radius: 0, max: Math.max(canvas.width, canvas.height)*1.2, opacity: 1 });
+        }
+
+        function runRenderLoop() {
+            ctx.fillStyle = '#050505'; ctx.fillRect(0,0,canvas.width,canvas.height);
+            shockwaves.forEach((w,i) => {
+                w.radius += 12; w.opacity = 1 - (w.radius/w.max);
+                ctx.beginPath(); ctx.arc(w.x, w.y, w.radius, 0, Math.PI*2);
+                ctx.strokeStyle = `rgba(255,0,0,${w.opacity * 0.5})`; ctx.lineWidth = 3; ctx.stroke();
+            });
+            shockwaves = shockwaves.filter(w => w.radius < w.max);
+            particles.forEach(p => { p.update(); p.draw(); });
+            drawVeinConnections();
+            requestAnimationFrame(runRenderLoop);
+        }
+        requestAnimationFrame(runRenderLoop);
+
+        document.getElementById('blood-select').onchange = loadMatches;
+        document.getElementById('radius-select').onchange = loadMatches;
+
+        document.getElementById('geo-btn').onclick = () => {
+            navigator.geolocation.getCurrentPosition(p => {
+                coords = { lat: p.coords.latitude, lng: p.coords.longitude };
+                document.getElementById('geo-status').innerHTML = `GPS SYNCHRONIZED: <span class="text-[#00F0FF] font-mono">${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}</span>`;
+                loadMatches();
+            }, () => alert('Location processing dropped. Check local diagnostic permissions.'));
+        };
+
+        function donorCard(d) {
+            return `<div class="donor-node interactive-element frozen-card rounded flex flex-col justify-between p-4 relative overflow-hidden fade-in-node" data-city="${d.city}">
+                <div class="flex justify-between items-start gap-4">
+                    <div>
+                        <h3 class="text-white font-bold text-xs uppercase tracking-wider">${d.fullName}</h3>
+                        <p class="text-[10px] font-mono text-slate-500 mt-1">${d.city} ${d.distanceKm ? `· <span class="text-[#00F0FF]">${d.distanceKm} KM</span>` : ''}</p>
+                    </div>
+                    <div class="holo-badge score-ring-tactical font-mono text-xs text-[#FF0000] border-[#FF0000]/30 bg-red-950/20">${d.bloodGroup}</div>
+                </div>
+                <div class="mt-4 flex items-center justify-between border-t border-white/5 pt-3">
+                    <span class="safety-indicator">SCORE // ${d.emergencyScore || 0}</span>
+                    <a href="tel:${d.phone}" class="text-[9px] font-mono font-bold uppercase tracking-widest border border-[#FF0000]/40 text-[#FF0000] px-3 py-1 rounded hover:bg-red-500/10 transition">Dial Node</a>
+                </div>
+            </div>`;
+        }
+
+        // SVG Lineage Rendering Engine
+        function drawVeinConnections() {
+            const svg = document.getElementById('vein-svg-layer');
+            svg.innerHTML = '';
+            const anchor = document.getElementById('hospital-anchor');
+            if (!anchor) return;
+
+            const anchorRect = anchor.getBoundingClientRect();
+            const startX = anchorRect.left + anchorRect.width / 2 + window.scrollX;
+            const startY = anchorRect.top + anchorRect.height / 2 + window.scrollY;
+
+            document.querySelectorAll('.donor-node').forEach(node => {
+                const nodeRect = node.getBoundingClientRect();
+                const endX = nodeRect.left + nodeRect.width / 2 + window.scrollX;
+                const endY = nodeRect.top + nodeRect.height / 2 + window.scrollY;
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const controlY = startY + (endY - startY) * 0.5;
+                const dAttribute = `M ${startX} ${startY} C ${startX} ${controlY}, ${endX} ${controlY}, ${endX} ${endY}`;
+                
+                path.setAttribute('d', dAttribute);
+                path.setAttribute('class', 'vein-path');
+                svg.appendChild(path);
+            });
+        }
+
+        async function loadMatches() {
+            const grid = document.getElementById('donor-grid');
+            grid.innerHTML = '<div class="col-span-full text-slate-500 text-center skeleton-shimmer py-8 border border-white/5 glass-panel rounded text-xs font-mono tracking-widest">POLLING RADIAL GEOMETRIES MATRIX...</div>';
+            const group = document.getElementById('blood-select').value;
+            const radius = document.getElementById('radius-select').value;
+
+            try {
+                const params = new URLSearchParams({ bloodGroup: group, radiusKm: radius });
+                if (coords) { params.append('lat', coords.lat); params.append('lng', coords.lng); }
+                
+                const data = await api(`/api/donors/match?${params}`);
+                grid.innerHTML = data.donors?.length ? data.donors.map(donorCard).join('') : '<div class="col-span-full text-slate-600 text-center py-8 font-mono text-xs">NO VECTOR CANDIDATES DETECTED INSIDE TARGET BOUNDS.</div>';
+                document.getElementById('stat-matched').textContent = data.donors?.length || 0;
+            } catch (err) { grid.innerHTML = `<div class="col-span-full text-rose-500 text-center font-bold font-mono text-xs">${err.message}</div>`; }
+        }
+
+        async function init() {
+            try {
+                const health = await api('/api/health');
+                document.getElementById('storage-badge').innerHTML = health.storage === 'mongo' ? ' live_db_stream' : ' file_buffer_fallback';
+                document.getElementById('stat-queue').textContent = health.pendingSync;
+                
+                const allDonors = await api('/api/donors');
+                document.getElementById('stat-total').textContent = allDonors.length;
+                
+                const items = await api('/api/emergencies');
+                document.getElementById('stat-emergencies').textContent = items.length;
+                document.getElementById('emergency-list').innerHTML = items.length ? items.map(renderEmergencyCard).join('') : '<p class="text-slate-600 text-[10px] font-mono p-4 text-center">FEED CLEAR // ACTIVE_LOGS_ZERO</p>';
+            } catch {}
+
+            socket = io();
+            socket.emit('join', { city: 'Amritsar' });
+            
+            socket.on('new_emergency', e => {
+                emitShockwave();
+                document.getElementById('feed-pulse').classList.add('pulse-active');
+                setTimeout(() => document.getElementById('feed-pulse').classList.remove('pulse-active'), 2000);
+                const feed = document.getElementById('emergency-list');
+                const emptyMsg = feed.querySelector('p');
+                if (emptyMsg) feed.innerHTML = '';
+                feed.insertAdjacentHTML('afterbegin', renderEmergencyCard(e));
+                
+                const count = document.getElementById('stat-emergencies');
+                count.textContent = parseInt(count.textContent || 0) + 1;
+            });
+
+            socket.on('donor_registered', () => {
+                emitShockwave();
+                const count = document.getElementById('stat-total');
+                count.textContent = parseInt(count.textContent || 0) + 1;
+                loadMatches();
+            });
+
+            await loadMatches();
+        }
+        init();
+    </script>
+</body>
+</html>

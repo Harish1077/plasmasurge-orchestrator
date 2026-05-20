@@ -1,4 +1,4 @@
-# PulseCore---E-Blood-Management-Backend-API
+# plasmasurge-orchestrator
 🩸 PulseCore - E-Blood Management Backend API
 PulseCore is a high-performance, secure backend service and RESTful API designed to power digital blood bank networks. It handles the core business logic, relational database management, and data pipelines required to seamlessly connect voluntary donors, hospitals, and blood banks during critical medical emergencies.
 

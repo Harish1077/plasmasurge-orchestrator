@@ -2,6 +2,42 @@
 🩸 PulseCore - E-Blood Management Backend API
 PulseCore is a high-performance, secure backend service and RESTful API designed to power digital blood bank networks. It handles the core business logic, relational database management, and data pipelines required to seamlessly connect voluntary donors, hospitals, and blood banks during critical medical emergencies.
 
+🏗️ System Architecture & Data-Flow Topology
+
+PlasmaSurge Orchestrator is engineered on a decoupled, reactive event-driven architecture designed to process high-throughput geospatial telemetry data with deterministic latency. The topology guarantees complete separation of concerns between client visual threads, state routing matrices, and low-level data persistence layers.
+
+System Topology Map
+text
+       [ EVENT TRANSMISSION LAYER ]              [ CORE RUNTIME GATEWAY ]             [ DATA PERSISTENCE ]
+       
++------------------------------------------+
+|  High-Contrast Obsidian Fluid Interface  |
+|  (HTML5 WebGL Shaders / Dynamic SVGs)    |
++--------------------+---------------------+
+                     |
+                     | 1. HTTP Rest / WebSockets
+                     ▼
++------------------------------------------+     2. Intercept Token    +----------------------------------+
+|   Express 5.0 Core Pipeline Gateway      +-------------------------->|    JWT Security Authentication   |
+|   (Socket.IO Room-Isolated Multiplexer)  |                           |    & Domain Verification Guard   |
++--------------------+---------------------+                           +----------------------------------+
+                     |
+                     | 3. Read / Write Event
+                     ▼
++------------------------------------------+     If Live Conn Dropped  +----------------------------------+
+|         Database Routing Proxy           +-------------------------->|    Resilient JSON Sync Queue     |
+|         (Mongoose State Monitor)         |                           |    (Local Outage Cache File)     |
++--------------------+---------------------+                           +--------------------+-------------+
+                     |                                                                      |
+                     | 4. Sync Stream (2dsphere Indexed)                                    | 5. Auto Flush
+                     ▼                                                                      |    (Every 15s)
++------------------------------------------+                                                |
+|       MongoDB Enterprise Database        |<-----------------------------------------------+
+|       (Geospatial Cluster Storage)       |
++------------------------------------------+
+
+
+
 Core Architectural Features
 Role-Based Access Control (RBAC): Secure authentication pipeline separating permissions for Admins, Blood Bank Staff, and Donors/Recipients.
 Inventory Automation: Relational database schemas designed to track blood units, manage storage expiration timelines, and prevent stock deficits.

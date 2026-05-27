@@ -43,9 +43,7 @@ dbService.init().then(() => {
     }, 15000);
 
     server.listen(config.PORT, () => {
-        console.log(`=============================================================`);
         console.log(` E-BLOOD ENTERPRISE SYSTEM DEPLOYED ONLINE AT PORT ${config.PORT} `);
-        console.log(`=============================================================`);
     });
 }).catch(err => {
     process.exit(1);
